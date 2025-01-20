@@ -14,6 +14,8 @@ class DrawingApp:
         self.canvas = tk.Canvas(root, width=600, height=400, bg='white')
         self.canvas.pack()
 
+        self.brush_size_scale = None
+
         self.last_x, self.last_y = None, None
 
         self.pen_size = StringVar(value="1")
@@ -28,6 +30,8 @@ class DrawingApp:
 
         self.canvas.bind('<B1-Motion>', self.paint)
         self.canvas.bind('<ButtonRelease-1>', self.reset)
+
+        self.canvas.bind('<Button-3>', self.pick_color)
 
 
     def setup_ui(self):
@@ -55,13 +59,13 @@ class DrawingApp:
         eraser_button = tk.Button(control_frame, textvariable=self.eraser_button_name, command=self.choose_eraser)
         eraser_button.pack(side=tk.RIGHT)
 
-    def size_reload(self, *args):
+    def size_reload(self):
         """
         Устанавливает значение слайдеру для изменения значения кисти.
         """
         self.brush_size_scale.set(self.pen_size.get())
 
-    def choose_eraser(self, *args):
+    def choose_eraser(self):
         """
         Функция изменяет цвет кисти имитируя ластик. Так же меняет титул кнопки в зависимости от активации ластика.
         """
@@ -69,9 +73,17 @@ class DrawingApp:
             self.pen_color_last = self.pen_color
             self.eraser_button_name.set('Кисть')
             self.pen_color = 'white'
+            self.root.config(cursor="circle")
         elif self.eraser_button_name.get() == 'Кисть':
             self.pen_color = self.pen_color_last
             self.eraser_button_name.set('Ластик')
+            self.root.config(cursor="arrow")
+
+    def pick_color(self, event):
+        def get_rgb(rgb):
+            return "#%02x%02x%02x" % rgb
+        print(self.image.getpixel((event.x, event.y)))
+        self.pen_color = get_rgb(self.image.getpixel((event.x, event.y)))
 
     def paint(self, event):
         """

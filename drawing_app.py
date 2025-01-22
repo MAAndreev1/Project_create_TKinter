@@ -33,6 +33,8 @@ class DrawingApp:
 
         self.canvas.bind('<Button-3>', self.pick_color)
 
+        self.root.bind('<Control-s>', self.save_image)
+        self.root.bind('<Control-c>', self.choose_color)
 
     def setup_ui(self):
         """
@@ -59,13 +61,14 @@ class DrawingApp:
         eraser_button = tk.Button(control_frame, textvariable=self.eraser_button_name, command=self.choose_eraser)
         eraser_button.pack(side=tk.RIGHT)
 
-    def size_reload(self):
+    def size_reload(self, *args):
         """
         Устанавливает значение слайдеру для изменения значения кисти.
         """
+        print(f'Получил размер - {self.pen_size.get()}')
         self.brush_size_scale.set(self.pen_size.get())
 
-    def choose_eraser(self):
+    def choose_eraser(self, *args):
         """
         Функция изменяет цвет кисти имитируя ластик. Так же меняет титул кнопки в зависимости от активации ластика.
         """
@@ -80,6 +83,9 @@ class DrawingApp:
             self.root.config(cursor="arrow")
 
     def pick_color(self, event):
+        """
+        Функция получает пиксель и устанавливает цвет пикселя как используемый.
+        """
         def get_rgb(rgb):
             return "#%02x%02x%02x" % rgb
         print(self.image.getpixel((event.x, event.y)))
@@ -107,7 +113,7 @@ class DrawingApp:
         """
         self.last_x, self.last_y = None, None
 
-    def clear_canvas(self):
+    def clear_canvas(self, *args):
         """
         Очищает холст, удаляя все нарисованное, и пересоздает объекты Image и ImageDraw для нового изображения.
         """
@@ -115,7 +121,7 @@ class DrawingApp:
         self.image = Image.new("RGB", (600, 400), "white")
         self.draw = ImageDraw.Draw(self.image)
 
-    def choose_color(self):
+    def choose_color(self, *args):
         """
         Открывает стандартное диалоговое окно выбора цвета и устанавливает выбранный цвет как текущий для кисти.
         """
@@ -123,7 +129,7 @@ class DrawingApp:
         if self.pen_color != 'white':
             self.eraser_button_name.set('Ластик')
 
-    def save_image(self):
+    def save_image(self, *args):
         """
         Позволяет пользователю сохранить изображение, используя стандартное диалоговое окно для сохранения файла.
         Поддерживает только формат PNG. В случае успешного сохранения выводится сообщение об успешном сохранении.

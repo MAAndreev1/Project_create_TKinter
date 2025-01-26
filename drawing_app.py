@@ -58,8 +58,15 @@ class DrawingApp:
         size_button = tk.OptionMenu(control_frame, self.pen_size,'1', '2', '5', '10')
         size_button.pack(side=tk.LEFT)
 
+        self.color_label = tk.Label(control_frame, background=self.pen_color, padx=20, borderwidth=5,
+                                    highlightthickness=4, highlightbackground="#f0f0f0")
+        self.color_label.pack(side=tk.RIGHT)
+
         eraser_button = tk.Button(control_frame, textvariable=self.eraser_button_name, command=self.choose_eraser)
         eraser_button.pack(side=tk.RIGHT)
+
+    def reload_label_color(self, *args):
+        self.color_label.config(background=self.pen_color)
 
     def size_reload(self, *args):
         """
@@ -90,6 +97,7 @@ class DrawingApp:
             return "#%02x%02x%02x" % rgb
         print(self.image.getpixel((event.x, event.y)))
         self.pen_color = get_rgb(self.image.getpixel((event.x, event.y)))
+        self.reload_label_color()
 
     def paint(self, event):
         """
@@ -128,6 +136,7 @@ class DrawingApp:
         self.pen_color = colorchooser.askcolor(color=self.pen_color)[1]
         if self.pen_color != 'white':
             self.eraser_button_name.set('Ластик')
+        self.reload_label_color()
 
     def save_image(self, *args):
         """

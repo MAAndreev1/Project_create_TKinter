@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import colorchooser, filedialog, messagebox, StringVar
+from tkinter import colorchooser, filedialog, messagebox, StringVar, simpledialog
 from PIL import Image, ImageDraw
 
 
@@ -58,12 +58,27 @@ class DrawingApp:
         size_button = tk.OptionMenu(control_frame, self.pen_size,'1', '2', '5', '10')
         size_button.pack(side=tk.LEFT)
 
+        canvas_size = tk.Button(control_frame, text="Холст", command=self.choosing_canvas_size)
+        canvas_size.pack(side=tk.LEFT)
+
         self.color_label = tk.Label(control_frame, background=self.pen_color, padx=20, borderwidth=5,
                                     highlightthickness=4, highlightbackground="#f0f0f0")
         self.color_label.pack(side=tk.RIGHT)
 
         eraser_button = tk.Button(control_frame, textvariable=self.eraser_button_name, command=self.choose_eraser)
         eraser_button.pack(side=tk.RIGHT)
+
+    def choosing_canvas_size(self):
+        """
+        Обновляет размеры холста
+        """
+        choose_height = tk.simpledialog.askinteger("Input","Input Height",parent=self.root)
+        choose_width = tk.simpledialog.askinteger("Input","Input Width",parent=self.root)
+
+        self.canvas.config(width=int(choose_width), height=int(choose_height))
+        self.canvas.delete("all")
+        self.image = Image.new("RGB", (choose_width, choose_height), "white")
+        self.draw = ImageDraw.Draw(self.image)
 
     def reload_label_color(self, *args):
         self.color_label.config(background=self.pen_color)
